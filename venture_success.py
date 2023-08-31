@@ -34,8 +34,32 @@ st.sidebar.markdown('<div class="sidebar-container">', unsafe_allow_html=True)
 st.sidebar.markdown('<div class="sidebar-content">', unsafe_allow_html=True)
 
 # Dropdown field for selecting Country
-country_options = ['USA', 'Other']
+country_options = [
+    'United States', 'Estonia', 'United Kingdom', 'Argentina', 'Hong Kong',
+    'Chile', 'Germany', 'France', 'China', 'Canada', 'Australia', 'Romania',
+    'Netherlands', 'Sweden', 'Russia', 'Denmark', 'India', 'Singapore',
+    'Norway', 'Belgium', 'Ireland', 'Italy', 'Israel', 'Spain', 'Thailand',
+    'New Zealand', 'Czech Republic', 'Switzerland', 'Brazil', 'Hungary',
+    'Japan', 'Botswana', 'South Korea', 'Nigeria', 'Finland', 'Turkey',
+    'Costa Rica', 'Portugal', 'Taiwan', 'Cambodia', 'Colombia', 'Ukraine',
+    'Lithuania', 'South Africa', 'Austria', 'Philippines', 'Iceland',
+    'Bulgaria', 'Uruguay', 'Croatia', 'Kenya', 'Mexico', 'Jordan', 'Vietnam',
+    'Ghana', 'Peru', 'Poland', 'Indonesia', 'Panama', 'Latvia', 'Albania',
+    'Uganda', 'Lebanon', 'Greece', 'United Arab Emirates', 'Pakistan',
+    'Egypt', 'Slovakia', 'Luxembourg', 'Malaysia', 'Bahamas', 'Armenia',
+    'Algeria', 'Moldova', 'Tunisia', 'Nicaragua', 'Tanzania', 'Cyprus',
+    'Nepal', 'Bahrain', 'Cameroon', 'Serbia', 'Saudi Arabia', 'Cayman Islands',
+    'Brunei', 'El Salvador', 'Ecuador', 'Malta', 'Slovenia', 'Laos',
+    'Trinidad and Tobago', 'Morocco', 'Myanmar', 'Bangladesh',
+    'Dominican Republic', 'Bermuda', 'Liechtenstein', 'Mozambique', 'Guatemala',
+    'Azerbaijan', 'Monaco', 'Zimbabwe', 'Uzbekistan', 'Oman', 'Belarus',
+    'Jersey', 'Jamaica', 'Kuwait', 'Mauritius', 'Ivory Coast', 'Somalia',
+    'North Macedonia', 'Gibraltar', 'Seychelles', 'Saint Martin'
+]
+
 selected_country = st.sidebar.selectbox("Select Country", country_options)
+# Map selected country to output value
+output_value = "USA" if selected_country == "Uni+ted States" else "Other"
 
 # Alphabetically sorted list of Industry Categories
 industry_categories = [
@@ -56,10 +80,15 @@ industry_category = st.sidebar.selectbox("Please select your Industry Category",
 default_founding_date = datetime.date(2005, 1, 1)
 
 # Date input for Company founding date
-founding_date = st.sidebar.date_input("Company founding date", value=default_founding_date, min_value=datetime.date(1995, 1, 1), max_value=datetime.date(2015, 12, 31))
+founding_date = st.sidebar.date_input("Company founding date", value=default_founding_date, min_value=datetime.date(1995, 1, 1), max_value=datetime.date(2023, 8, 31))
 
+# Date input for Time between First and Last Funding
+time_between_funding_dates = st.sidebar.date_input("Time between First and Last Funding", value=default_founding_date, min_value=datetime.date(1995, 1, 1), max_value=datetime.date(2023, 8, 31))
+
+# Date input for Days in Business
+days_in_business = st.sidebar.date_input("Days in Business", value=default_founding_date, min_value=datetime.date(1995, 1, 1), max_value=datetime.date(2023, 8, 31))
 # Check if the input date is within the defined range
-if founding_date < datetime.date(1995, 1, 1) or founding_date > datetime.date(2015, 12, 31):
+if founding_date < datetime.date(1995, 1, 1) or founding_date > datetime.date(2023, 8, 31):
     st.sidebar.warning("Date not in defined range between 1995 and 2015")
 
 # Input field for Total Investments in USD
@@ -89,9 +118,11 @@ st.sidebar.write("Investment Round:", investment_round_label)
 api_input = {
     "industry_category": industry_category,
     "founding_date": founding_date.strftime("%Y-%m-%d"),
+    "time_between_funding_dates": time_between_funding_dates.strftime("%Y-%m-%d"),
+    "days_in_business": days_in_business.strftime("%Y-%m-%d"),
     "total_investments": total_investments,
     "investment_round": investment_round_label,
-    "country": selected_country
+    "country": output_value
 }
 
 # Make API request
