@@ -26,7 +26,7 @@ st.markdown('<link rel="stylesheet" type="text/css" href="styles.css">', unsafe_
 st.title("Venture Success Prediction Project Batch-1307")
 
 # Create the sidebar
-sidebar_width = 0.3  # 30% of the page width
+sidebar_width = 0.3  #0.3 ratio
 
 # Apply the CSS class to the sidebar content
 st.sidebar.markdown('<h2 class="data-input-title" style="padding-top: 0;">Data Input</h2>', unsafe_allow_html=True)
@@ -84,6 +84,27 @@ investment_round_value = st.sidebar.slider("Investment Round", min_value=1, max_
 investment_round_label = investment_round_labels[investment_round_value]
 st.sidebar.write("Investment Round:", investment_round_label)
 
+
+# Collect API input
+api_input = {
+    "industry_category": industry_category,
+    "founding_date": founding_date.strftime("%Y-%m-%d"),
+    "total_investments": total_investments,
+    "investment_round": investment_round_label,
+    "country": selected_country
+}
+
+# Make API request
+if st.sidebar.button("Predict success"):
+    url = "http://127.0.0.1:8000/predict?funding_rounds=1&time_between_first_last_funding=89&days_in_business=300&country_usa=true"
+    response = requests.get(url, params=api_input)
+
+    if response.status_code == 200:
+        prediction = response.json()['success']
+        st.success(f"Predicted rate of success: {prediction:.2f}")
+    else:
+        st.error("Error fetching prediction from the API")
+
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
@@ -98,24 +119,5 @@ st.markdown(
 )
 st.write("Content???")
 
-# Collect API input
-api_input = {
-    "industry_category": industry_category,
-    "founding_date": founding_date.strftime("%Y-%m-%d"),
-    "total_investments": total_investments,
-    "investment_round": investment_round_label,
-    "country": selected_country
-}
-
-# Make API request
-if st.button("Predict success"):
-    url = "http://127.0.0.1:8000/predict?funding_rounds=1&time_between_first_last_funding=89&days_in_business=300&country_usa=true"
-    response = requests.get(url, params=api_input)
-
-    if response.status_code == 200:
-        prediction = response.json()['success']
-        st.success(f"Predicted rate of success: {prediction:.2f}")
-    else:
-        st.error("Error fetching prediction from the API")
 
 st.markdown('</div>', unsafe_allow_html=True)
