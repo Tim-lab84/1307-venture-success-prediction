@@ -16,6 +16,7 @@ import streamlit as st
 import requests
 import datetime
 from PIL import Image
+import pandas as pd
 # Set the page width
 st.set_page_config(layout="wide")
 
@@ -89,6 +90,9 @@ default_founding_date = datetime.date(2005, 1, 1)
 #days_in_business = st.sidebar.date_input("Days in Business", value=default_founding_date, min_value=datetime.date(1995, 1, 1), max_value=datetime.date(2023, 8, 31))
 days_in_business = st.sidebar.number_input("Days in Business", min_value=0)
 
+
+#Time between first and Last funding input
+time_between_first_last_funding = st.sidebar.number_input("Time between first and last funding", min_value=0)
 # Check if the input date is within the defined range
 #if founding_date < datetime.date(1995, 1, 1) or founding_date > datetime.date(2023, 8, 31):
 #    st.sidebar.warning("Date not in defined range between 1995 and 2023")
@@ -119,16 +123,40 @@ st.sidebar.write("Investment Round:", investment_round_label)
 # Collect API input
 api_input = {
     "Industry_Group": industry_category,          #string
-    "days_in_business": days_in_business,         #int
     "funding_total_usd ": total_investments,      #float
+    "country_code": output_value,                 #"USA" or "Other"
     "funding_rounds": investment_round_label,     #int 1-8
-    "country_code": output_value                  #"USA" or "Other"
+    "time_between_first_last_funding": time_between_first_last_funding,  #int
+    "days_in_business": days_in_business,         #int
 }
+
+def preproc_input(input_dict):
+    data = pd.DataFrame(input_dict, index=[0])
+    list_of_ind = ['Industry_Group_Biotechnology', 'Industry_Group_Commerce and Shopping',
+                   'Industry_Group_Community and Lifestyle',
+                   'Industry_Group_Health Care',
+                    'Industry_Group_Information Technology',
+                    'Industry_Group_Internet Services',
+                    'Industry_Group_Other',
+                    'Industry_Group_Software']
+    list_of_ind_stripped = ['Biotechnology', 'Commerce and Shopping',
+                   'Community and Lifestyle',
+                   'Health Care',
+                    'Information Technology',
+                    'Internet Services',
+                    'Other',
+                    'Software']
+    for industry in list_of_ind:
+        data[industry] = 0.0
+    for industry in list_of_ind_stripped:
+        if data['Industry_Group'][0] == industry:
+            data[f'Industry_Group_{industry}'] = 1.0
+    return data.drop(columns=['Industry_Group']).iloc[0].to_dict()
 
 # Make API request
 if st.sidebar.button("Predict success"):
     url = "http://127.0.0.1:8000/predict?funding_rounds=1&time_between_first_last_funding=89&days_in_business=300&country_usa=true"
-    response = requests.get(url, params=api_input)
+    response = requests.get(url, params=preproc_input(api_input))
 
     if response.status_code == 200:
         prediction = response.json()['success']
@@ -141,9 +169,6 @@ st.sidebar.markdown('</div>', unsafe_allow_html=True)
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
 # Main content of the page
-# Main content of the page with background image
-
-# Main content of the page with background image
 st.markdown(
     '<div style="background-image: url(\'https://fastly.picsum.photos/id/277/536/354.jpg\'); background-size: cover;">',
     unsafe_allow_html=True
