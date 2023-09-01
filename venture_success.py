@@ -86,7 +86,9 @@ default_founding_date = datetime.date(2005, 1, 1)
 #time_between_funding_dates = st.sidebar.date_input("Time between First and Last Funding", value=default_founding_date, min_value=datetime.date(1995, 1, 1), max_value=datetime.date(2023, 8, 31))
 
 # Date input for Days in Business
-days_in_business = st.sidebar.date_input("Days in Business", value=default_founding_date, min_value=datetime.date(1995, 1, 1), max_value=datetime.date(2023, 8, 31))
+#days_in_business = st.sidebar.date_input("Days in Business", value=default_founding_date, min_value=datetime.date(1995, 1, 1), max_value=datetime.date(2023, 8, 31))
+days_in_business = st.sidebar.number_input("Days in Business", min_value=0)
+
 # Check if the input date is within the defined range
 #if founding_date < datetime.date(1995, 1, 1) or founding_date > datetime.date(2023, 8, 31):
 #    st.sidebar.warning("Date not in defined range between 1995 and 2023")
@@ -116,11 +118,11 @@ st.sidebar.write("Investment Round:", investment_round_label)
 
 # Collect API input
 api_input = {
-    "Industry_Group": industry_category,
-    "days_in_business": days_in_business.strftime("%Y-%m-%d"),
-    "funding_total_usd ": total_investments,
-    "funding_rounds": investment_round_label,
-    "country_code": output_value
+    "Industry_Group": industry_category,          #string
+    "days_in_business": days_in_business,         #int
+    "funding_total_usd ": total_investments,      #float
+    "funding_rounds": investment_round_label,     #int 1-8
+    "country_code": output_value                  #"USA" or "Other"
 }
 
 # Make API request
