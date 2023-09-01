@@ -59,7 +59,7 @@ country_options = [
 
 selected_country = st.sidebar.selectbox("Select Country", country_options)
 # Map selected country to output value
-output_value = "USA" if selected_country == "Uni+ted States" else "Other"
+output_value = "USA" if selected_country == "United States" else "Other"
 
 # Alphabetically sorted list of Industry Categories
 industry_categories = [
@@ -80,16 +80,16 @@ industry_category = st.sidebar.selectbox("Please select your Industry Category",
 default_founding_date = datetime.date(2005, 1, 1)
 
 # Date input for Company founding date
-founding_date = st.sidebar.date_input("Company founding date", value=default_founding_date, min_value=datetime.date(1995, 1, 1), max_value=datetime.date(2023, 8, 31))
+#founding_date = st.sidebar.date_input("Company founding date", value=default_founding_date, min_value=datetime.date(1995, 1, 1), max_value=datetime.date(2023, 8, 31))
 
 # Date input for Time between First and Last Funding
-time_between_funding_dates = st.sidebar.date_input("Time between First and Last Funding", value=default_founding_date, min_value=datetime.date(1995, 1, 1), max_value=datetime.date(2023, 8, 31))
+#time_between_funding_dates = st.sidebar.date_input("Time between First and Last Funding", value=default_founding_date, min_value=datetime.date(1995, 1, 1), max_value=datetime.date(2023, 8, 31))
 
 # Date input for Days in Business
 days_in_business = st.sidebar.date_input("Days in Business", value=default_founding_date, min_value=datetime.date(1995, 1, 1), max_value=datetime.date(2023, 8, 31))
 # Check if the input date is within the defined range
-if founding_date < datetime.date(1995, 1, 1) or founding_date > datetime.date(2023, 8, 31):
-    st.sidebar.warning("Date not in defined range between 1995 and 2015")
+#if founding_date < datetime.date(1995, 1, 1) or founding_date > datetime.date(2023, 8, 31):
+#    st.sidebar.warning("Date not in defined range between 1995 and 2023")
 
 # Input field for Total Investments in USD
 total_investments = st.sidebar.number_input("Total Investments (USD)", min_value=0.0)
@@ -116,13 +116,11 @@ st.sidebar.write("Investment Round:", investment_round_label)
 
 # Collect API input
 api_input = {
-    "industry_category": industry_category,
-    "founding_date": founding_date.strftime("%Y-%m-%d"),
-    "time_between_funding_dates": time_between_funding_dates.strftime("%Y-%m-%d"),
+    "Industry_Group": industry_category,
     "days_in_business": days_in_business.strftime("%Y-%m-%d"),
-    "total_investments": total_investments,
-    "investment_round": investment_round_label,
-    "country": output_value
+    "funding_total_usd ": total_investments,
+    "funding_rounds": investment_round_label,
+    "country_code": output_value
 }
 
 # Make API request
